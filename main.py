@@ -10,10 +10,12 @@
 # from typing import Union
 
 from LoanSystem import LoanSystem
+import Gui
 
 
 # Main function
 def main():
+
     ls = LoanSystem()
     ls.run()
 

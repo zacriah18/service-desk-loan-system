@@ -135,7 +135,7 @@ def update_asset_data(barcode_number: str) -> None:
                 "list_info": {
                     "start_index": 0,
                     "row_count": 1,
-                    "fields_required": ["id", "name", "barcode", "state"],
+                    "fields_required": ["id", "name", "barcode", "state", "loan.id", "loan.loan.id"],
                     "search_criteria": {
                         "field": "barcode",
                         "condition": "is",

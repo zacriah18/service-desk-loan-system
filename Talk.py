@@ -16,7 +16,7 @@ from typing import Union
 
 # Used class in loanSystem.__init__
 class Authenticator:
-    def __init__(self):
+    def __init__(self, code: str = ""):
         self.current_scope = ""
         self.last_refresh = HandleTime.get_now_timestamp()
         self.auth_credentials_filename = "authenticationCredentials.json"
@@ -33,35 +33,49 @@ class Authenticator:
         self.auth_setup_file = lambda: JsonReader.get_json(self.auth_setup_filename,
                                                            self.auth_folder_name)
 
-    def authenticate(self, code: str = ""):
-        # code is used to set up first time authentication from
         if code:
-            JsonReader.update_json(self.auth_setup_filename, self.auth_folder_name, "code", str(code))
+            JsonReader.update_json(self.auth_setup_filename,
+                                   self.auth_folder_name,
+                                   "code",
+                                   str(code)
+                                   )
             response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_setup_file())
+            response_json = response.json()
+            JsonReader.save_last_refresh(response_json)
+            try:
+                JsonReader.update_json(self.auth_refresh_filename,
+                                       self.auth_folder_name,
+                                       "refresh_token",
+                                       response_json["refresh_token"]
+                                       )
+            except KeyError:
+                exit("FATAL ERROR: Could not complete initial authentication with code.")
         else:
-            response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_refresh_file())
+            self.authenticate()
 
+    def authenticate(self):
+        # code is used to set up first time authentication from
+        response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_refresh_file())
         response_json = response.json()
         JsonReader.save_last_refresh(response_json)
-        try:
-            if code:
-                JsonReader.update_json(self.auth_refresh_filename, self.auth_folder_name, "refresh_token",
-                                       response_json["refresh_token"])
 
-            JsonReader.update_json(self.auth_credentials_filename, self.auth_folder_name, "Authorization",
-                                   "Zoho-oauth" + "token " + response_json["access_token"])
+        try:
+            JsonReader.update_json(self.auth_credentials_filename,
+                                   self.auth_folder_name,
+                                   "Authorization",
+                                   "Zoho-oauth" + "token " + response_json["access_token"]
+                                   )
+
         except KeyError:
-            if code:
-                return 2
-                # UNEXPECTED RESPONSE WHILE TRYING TO INITIATE AUTHENTICATION
-            else:
-                return 1
-                # UNEXPECTED RESPONSE WHILE TRYING TO RENEW AUTHENTICATION
+            return 1
+            # UNEXPECTED RESPONSE WHILE TRYING TO RENEW AUTHENTICATION
+
         self.last_refresh = HandleTime.get_now_timestamp()
         return 0
 
     # Used Method
     def talk(self, action: str, url: str, param: object = "") -> type(requests.models.Response):
+
         self.update_scope(url)
         if self.last_refresh - HandleTime.get_now_timestamp() > 3500:
             self.authenticate()
@@ -99,6 +113,7 @@ def handle_response(response: type(requests.models.Response)) -> Union[dict, Non
     if response.status_code != 200:
         print(response)
         print(response.status_code)
+
         return None
     response_json = response.json()
     JsonReader.save_last_response(response_json)
