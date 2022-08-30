@@ -207,7 +207,7 @@ class Gui(Tk):
                 loan_id = device["loan"]["loan"]["id"]
             except (KeyError, TypeError) as _:
                 self.frames["Update"].display("""Device is in use but not on loan\n\
-                The details for this dewd aw vice are not setup for loan\n\
+                The details for this device are not setup for loan\n\
                 Please contact IT if this device should be loanable""", "red", self.standard_error_interval)
                 return
 
