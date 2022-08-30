@@ -9,14 +9,17 @@ class Barcode(Frame):
         Frame.__init__(self, parent)
         self.controller = controller
         self.input = ""
-
+        self.config(bg=controller.background_colour)
         self.return_mode = False
 
-        self.label = Label(self, text=f"Barcode: {self.input}", font=controller.title_font, fg=controller.font_colour)
+        self.label = Label(self, text=f"Barcode: {self.input}", font=controller.title_font, fg=controller.font_colour,
+                           bg=controller.background_colour)
         self.label.pack(expand=True, anchor=CENTER)
 
         self.button = Button(self, text=f"Toggle Return Mode: {self.return_mode}",
                              command=self.toggle_return)
+        self.button.config(height=5, width=30, font=controller.title_font, fg=controller.font_colour,
+                           bg=controller.button_colour)
         self.button.pack()
 
     def toggle_return(self):
@@ -43,12 +46,14 @@ class Swipe(Frame):
         self.controller = controller
 
         self.input = ""
+        self.config(bg=controller.background_colour)
 
-        self.label = Label(self, text=f"Swipe: {self.input}", font=controller.title_font, fg=controller.font_colour)
+        self.label = Label(self, text=f"Swipe: {self.input}", font=controller.title_font, fg=controller.font_colour,
+                           bg=controller.background_colour)
         self.label.pack(expand=True, anchor=CENTER)
 
-        button = Button(self, text="Cancel",
-                        command=self.cancel)
+        button = Button(self, text="Cancel", command=self.cancel)
+        button.config(height=5, width=30, fg=controller.font_colour, bg=controller.button_colour)
         button.pack()
 
     def cancel(self):
@@ -104,6 +109,8 @@ class Gui(Tk):
 
         self.title_font = tk_font.Font(family='Helvetica', size=24, weight="bold", slant="italic")
         self.font_colour = "white"
+        self.background_colour = "black"
+        self.button_colour = "grey"
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
