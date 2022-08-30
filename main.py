@@ -9,15 +9,13 @@
 #    that serve major processes
 # from typing import Union
 
-from LoanSystem import LoanSystem
 import Gui
 
 
 # Main function
 def main():
-
-    ls = LoanSystem()
-    ls.run()
+    gui = Gui.Gui()
+    gui.run()
 
 
 if __name__ == "__main__":

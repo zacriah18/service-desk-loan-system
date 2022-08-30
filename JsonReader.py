@@ -15,7 +15,7 @@ import os
 # Used Function in Talk.
 def get_json(file_name: str, folder_name: str) -> object:
     json_folder = "jsonData"
-    path = f"{os.getcwd()}\\{json_folder}\\{folder_name}\\{file_name}"
+    path = os.path.join(os.getcwd(), json_folder, folder_name, file_name)
 
     with open(path) as file:
         return json.load(file)
@@ -37,7 +37,7 @@ def overwrite_json(path: str, response: object) -> None:
 def save_last_response(response: object) -> None:
     json_folder = "jsonData"
     response_folder = "connectionInfo"
-    path = os.getcwd() + f"\\{json_folder}\\{response_folder}\\lastResponse.json"
+    path = os.path.join(os.getcwd(), json_folder, response_folder, "lastResponse.json")
 
     overwrite_json(path, response)
 
@@ -46,7 +46,7 @@ def save_last_response(response: object) -> None:
 def save_last_refresh(response: object) -> None:
     json_folder = "jsonData"
     response_folder = "connectionInfo"
-    path = os.getcwd() + f"\\{json_folder}\\{response_folder}\\lastRefresh.json"
+    path = os.path.join(os.getcwd(), json_folder, response_folder, "lastRefresh.json")
 
     overwrite_json(path, response)
 
@@ -57,7 +57,7 @@ def save_last_refresh(response: object) -> None:
 def update_since_last_monday_input_data(time: int) -> None:
     json_folder = "jsonData"
     param_folder = "searchParam"
-    path = f'{os.getcwd()}\\{json_folder}\\{param_folder}\\lastMonday.json'
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "lastMonday.json")
 
     save = {
         "input_data":
@@ -80,7 +80,7 @@ def update_since_last_monday_input_data(time: int) -> None:
 def update_return_asset_data(time: int, comment: str, user_id: int):
     json_folder = "jsonData"
     param_folder = "postParam"
-    path = f'{os.getcwd()}\\{json_folder}\\{param_folder}\\returnAsset.json'
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "returnAsset.json")
 
     save = {
         "input_data":
@@ -103,7 +103,7 @@ def update_return_asset_data(time: int, comment: str, user_id: int):
 def update_user_data(swipe_number: str) -> None:
     json_folder = "jsonData"
     param_folder = "searchParam"
-    path = f'{os.getcwd()}\\{json_folder}\\{param_folder}\\userData.json'
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "userData.json")
 
     save = {
         "input_data":
@@ -127,7 +127,7 @@ def update_user_data(swipe_number: str) -> None:
 def update_asset_data(barcode_number: str) -> None:
     json_folder = "jsonData"
     param_folder = "searchParam"
-    path = f'{os.getcwd()}\\{json_folder}\\{param_folder}\\assetData.json'
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "assetData.json")
 
     save = {
         "input_data":
@@ -152,7 +152,7 @@ def update_asset_data(barcode_number: str) -> None:
 def update_loan_creation(start_time: int, due_time: int, user_id: int, asset_id: int) -> None:
     json_folder = "jsonData"
     param_folder = "postParam"
-    path = f'{os.getcwd()}\\{json_folder}\\{param_folder}\\createLoan.json'
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "createLoan.json")
 
     save = {
         "input_data":
@@ -187,7 +187,7 @@ def update_loan_creation(start_time: int, due_time: int, user_id: int, asset_id:
 #                  JsonReader.update_scope,
 def update_json(file_name: str, folder_name: str, element_id: str, value: str) -> int:
     json_folder = "jsonData"
-    path = f"{os.getcwd()}\\{json_folder}\\{folder_name}\\{file_name}"
+    path = os.path.join(os.getcwd(), json_folder, folder_name, file_name)
 
     try:
         with open(path, 'r') as file:

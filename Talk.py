@@ -88,7 +88,10 @@ class Authenticator:
             "post": lambda: requests.post(url, param, headers=auth_header),
             "put": lambda: requests.put(url, param, headers=auth_header)
         }
-        return actions[action]()
+        try:
+            return actions[action]()
+        except requests.exceptions.ConnectionError:
+            return None
 
     def update_scope(self, url: str) -> None:
         # possible scopes = ["requests", "problems", "changes", "projects", "assets", "cmdb", "setup", "general"]
@@ -107,10 +110,9 @@ class Authenticator:
         # force authentication not check_auth because of scope change
         self.authenticate()
 
-
 # Used Function by loanSystem.trigger_return_battery_pack
 def handle_response(response: type(requests.models.Response)) -> Union[dict, None]:
-    if response.status_code != 200:
+    if response.status_code not in (200, 201):
         print(response)
         print(response.status_code)
 
