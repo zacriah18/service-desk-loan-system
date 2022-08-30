@@ -102,6 +102,7 @@ class Gui(Tk):
         )
         self.config(bg="black")
         self.bind("<Key>", self.key_pressed)
+        self.config(cursor="none")
 
         self.ls = LoanSystem()
         self.battery_pack = {}
