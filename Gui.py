@@ -18,7 +18,7 @@ class Barcode(Frame):
 
         self.button = Button(self, text=f"Toggle Return Mode: {self.return_mode}",
                              command=self.toggle_return)
-        self.button.config(height=5, width=30, font=controller.title_font, fg=controller.font_colour,
+        self.button.config(height=5, width=30, font=controller.button_font, fg=controller.font_colour,
                            bg=controller.button_colour)
         self.button.pack()
 
@@ -52,7 +52,7 @@ class Swipe(Frame):
                            bg=controller.background_colour)
         self.label.pack(expand=True, anchor=CENTER)
 
-        button = Button(self, text="Cancel", command=self.cancel)
+        button = Button(self, text="Cancel", command=self.cancel, font=controller.button_font)
         button.config(height=5, width=30, fg=controller.font_colour, bg=controller.button_colour)
         button.pack()
 
@@ -108,6 +108,7 @@ class Gui(Tk):
         self.standard_error_interval = 2000  # 2 seconds
 
         self.title_font = tk_font.Font(family='Helvetica', size=24, weight="bold", slant="italic")
+        self.button_font = tk_font.Font(family='Helvetica', size=14, weight="bold", slant="italic")
         self.font_colour = "white"
         self.background_colour = "black"
         self.button_colour = "grey"
