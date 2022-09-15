@@ -110,12 +110,15 @@ class Authenticator:
         # force authentication not check_auth because of scope change
         self.authenticate()
 
+
 # Used Function by loanSystem.trigger_return_battery_pack
 def handle_response(response: type(requests.models.Response)) -> Union[dict, None]:
+    print(response)
     if response.status_code not in (200, 201):
         print(response)
         print(response.status_code)
-
+        response_json = response.json()
+        JsonReader.save_last_response(response_json)
         return None
     response_json = response.json()
     JsonReader.save_last_response(response_json)

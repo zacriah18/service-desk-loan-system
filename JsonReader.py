@@ -100,6 +100,38 @@ def update_return_asset_data(time: int, comment: str, user_id: int):
     overwrite_json(path, save)
 
 
+def update_laptop_barcode(laptop_serial: str) -> None:
+    json_folder = "jsonData"
+    param_folder = "searchParam"
+    path = os.path.join(os.getcwd(), json_folder, param_folder, "laptopBarcode.json")
+
+    save = {
+        "input_data":
+            '''{
+                "list_info": {
+                    "start_index": 0,
+                    "row_count": 1,
+                    "fields_required": ["id", "barcode"],
+                    "search_criteria": {
+                        "field": "product.product_type.name",
+                        "condition": "is",
+                        "value": "Student Device",
+                        "children" : [ 
+                            {
+                                "field": "barcode",
+                                "condition": "is",
+                                "value": ''' + str(laptop_serial) + ''',
+                                "logical_operator" : "AND"
+                            } 
+                        ]
+                    }
+                }
+            }'''
+    }
+
+    overwrite_json(path, save)
+
+
 def update_user_data(swipe_number: str) -> None:
     json_folder = "jsonData"
     param_folder = "searchParam"

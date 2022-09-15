@@ -1,26 +1,107 @@
+import os
 from tkinter import *
 from tkinter import font as tk_font
+from PIL import ImageTk, Image
+
 from LoanSystem import LoanSystem
+
+
+class Test(Frame):
+    def __init__(self, parent, controller, width, height):
+        Frame.__init__(self, parent, width=width, height=height)
+
+        self.controller = controller
+        self.config(bg=controller.background_colour)
+
+        image_height = 128
+        image_width = 100
+
+        # # Import Image | separate image import for better config
+        logo_image_raw = Image.open(os.path.join(os.getcwd(), "images", "only_sacs_logo.png"))
+        #   .resize((image_width, image_height), Image.ANTIALIAS)
+        logo_image_tk = ImageTk.PhotoImage(logo_image_raw)
+
+        # IMAGE LABEL
+        self.logo_label = Label(self, image=logo_image_tk)
+        self.logo_label.image = logo_image_tk
+        self.logo_label.config(borderwidth=0, highlightthickness=0)
+        self.logo_label.grid(row=1, column=1)
+
+        # # TEXT LABEL
+        self.label = Label(self, text=f"{self.winfo_geometry()}")
+        self.label.config(font=controller.title_font, bg=controller.background_colour, fg=controller.font_colour)
+        self.label.grid(row=2, column=2)
+
+        #
+        # # SETTINGS BUTTON
+        # self.button = Button(self, text="BUTTON")
+        # self.button.config(width=controller.width-image_width, height=int(controller.height / 2))
+        # self.button.config(font=controller.button_font, bg=controller.background_colour)
+        #
+        # # Logo
+        # self.logo_label.grid(row=1, column=1, rowspan=2)
+        #
+        # # Label
+        # self.label.grid(row=1, column=2, sticky=NE)
+        #
+        # # Button
+        # self.button.grid(row=2, column=2, sticky=SE)
+
+    def refresh(self):
+        print(f"Controller: {self.controller.winfo_geometry()}\nContainer: {self.parent.winfo_geometry()}\nFrame: {self.winfo_geometry()}")
+        self.controller.after(1000, self.refresh)
 
 
 class Barcode(Frame):
 
-    def __init__(self, parent, controller):
-        Frame.__init__(self, parent)
+    def __init__(self, parent, controller, width, height):
+        Frame.__init__(self, parent, width=width, height=height)
+        self.parent = parent
         self.controller = controller
-        self.input = ""
         self.config(bg=controller.background_colour)
+
+        #  -------------------------------------------------------------------------------------------------------------
+        #  Class variables
+        self.input = ""
         self.return_mode = False
 
-        self.label = Label(self, text=f"Barcode: {self.input}", font=controller.title_font, fg=controller.font_colour,
-                           bg=controller.background_colour)
-        self.label.pack(expand=True, anchor=CENTER)
+        #  -------------------------------------------------------------------------------------------------------------
+        #  Class Graphics
 
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_rowconfigure(0, weight=2)
+
+        self.grid_columnconfigure(1, weight=2)
+        self.grid_rowconfigure(1, weight=2)
+
+        self.grid_columnconfigure(2, weight=1)
+        self.grid_rowconfigure(2, weight=0)
+
+        #  Import Image | separate image import for better config
+        image_height = 128
+        image_width = 100
+        logo_image_raw = Image.open(os.path.join(os.getcwd(), "images", "only_sacs_logo.png"))
+        logo_image_raw.resize((image_width, image_height), Image.ANTIALIAS)
+        logo_image_tk = ImageTk.PhotoImage(logo_image_raw)
+
+        # IMAGE LABEL
+        self.logo_label = Label(self, image=logo_image_tk)
+        self.logo_label.image = logo_image_tk
+        self.logo_label.config(borderwidth=0, highlightthickness=0)
+        self.logo_label.grid(row=0, column=0, rowspan=2, sticky='w')
+
+        # Label
+        self.label = Label(self, text=f"Barcode: {self.input}")
+        self.label.config(font=controller.title_font, fg=controller.font_colour, bg=controller.background_colour)
+        self.label.grid(row=0, column=1, rowspan=2, columnspan=2, sticky='w')
+
+        # Button
         self.button = Button(self, text=f"Toggle Return Mode: {self.return_mode}",
                              command=self.toggle_return)
-        self.button.config(height=5, width=30, font=controller.button_font, fg=controller.font_colour,
-                           bg=controller.button_colour)
-        self.button.pack()
+        self.button.config(font=controller.button_font, fg=controller.font_colour, bg=controller.button_colour)
+        self.button.grid(row=2, column=0, columnspan=3, rowspan=2, sticky='news')
+
+        self.logging()
 
     def toggle_return(self):
         self.return_mode = not self.return_mode
@@ -39,50 +120,55 @@ class Barcode(Frame):
         self.input = self.input[:-1]
         self.label.config(text=f"Barcode: {self.input}")
 
+    def logging(self):
+        print(f"Controller: {self.controller.winfo_geometry()}\n\
+        Container: {self.parent.winfo_geometry()}\nFrame: {self.winfo_geometry()}")
+        self.controller.after(1000, self.logging)
 
-class Swipe(Frame):
-    def __init__(self, parent, controller):
-        Frame.__init__(self, parent)
+
+class LaptopSerial(Frame):
+    def __init__(self, parent, controller, width, height):
+        Frame.__init__(self, parent, width=width, height=height)
         self.controller = controller
 
         self.input = ""
         self.config(bg=controller.background_colour)
 
-        self.label = Label(self, text=f"Swipe: {self.input}", font=controller.title_font, fg=controller.font_colour,
+        self.label = Label(self, text=f"Laptop Serial: {self.input}", font=controller.title_font, fg=controller.font_colour,
                            bg=controller.background_colour)
-        self.label.pack(expand=True, anchor=CENTER)
+        self.label.grid(row=1, column=1)
 
         button = Button(self, text="Cancel", command=self.cancel, font=controller.button_font)
         button.config(height=5, width=30, fg=controller.font_colour, bg=controller.button_colour)
-        button.pack()
+        button.grid(row=2, column=1)
 
     def cancel(self):
         self.input = ""
-        self.label.config(text=f"Swipe: {self.input}")
+        self.label.config(text=f"Laptop Serial: {self.input}")
         self.controller.show_frame("Barcode")
 
     def key_press(self, key):
         self.input = self.input + key
-        self.label.config(text=f"Swipe: {self.input}")
+        self.label.config(text=f"Laptop Serial: {self.input}")
 
     def submit_input(self):
-        self.controller.swipe_submit(self.input)
+        self.controller.laptop_serial_submit(self.input)
         self.input = ""
-        self.label.config(text=f"Swipe: {self.input}")
+        self.label.config(text=f"Laptop Serial: {self.input}")
 
     def back(self):
         self.input = self.input[:-1]
-        self.label.config(text=f"Swipe: {self.input}")
+        self.label.config(text=f"Laptop Serial: {self.input}")
 
 
 class Update(Frame):
-    def __init__(self, parent, controller):
-        Frame.__init__(self, parent)
+    def __init__(self, parent, controller, width, height):
+        Frame.__init__(self, parent, width=width, height=height)
         self.controller = controller
         self.config(bg="green")
 
-        self.label = Label(self, text="Update", font=controller.title_font, fg=controller.font_colour)
-        self.label.pack(expand=True, anchor=CENTER)
+        self.label = Label(self, text="Update", font=controller.error_font, fg=controller.font_colour)
+        self.label.grid(row=0, column=0)
 
     def display(self, text, colour, interval=0, frame="Barcode"):
         self.config(bg=colour)
@@ -95,41 +181,62 @@ class Update(Frame):
 class Gui(Tk):
     def __init__(self):
         Tk.__init__(self)
-        
-        self.attributes(
-            '-fullscreen',
-            True
-        )
-        self.config(bg="black")
+
+        #  -------------------------------------------------------------------------------------------------------------
+        #  GUI
+
+        # self.attributes(
+        #     '-fullscreen',
+        #     True
+        # )
+
+        self.current_frame = None
+
+        self.width = 320
+        self.height = 240
+        self.geom = str(self.width) + "x" + str(self.height)
+        self.geometry(self.geom)
         self.bind("<Key>", self.key_pressed)
-        self.config(cursor="none")
+        # self.config(cursor="none")
 
         self.ls = LoanSystem()
         self.battery_pack = {}
         self.standard_error_interval = 2000  # 2 seconds
 
-        self.title_font = tk_font.Font(family='Helvetica', size=24, weight="bold", slant="italic")
+        self.title_font = tk_font.Font(family='Helvetica', size=16, weight="bold", slant="italic")
         self.button_font = tk_font.Font(family='Helvetica', size=14, weight="bold", slant="italic")
+        self.error_font = tk_font.Font(family='Helvetica', size=12, weight="bold", slant="italic")
         self.font_colour = "white"
-        self.background_colour = "black"
-        self.button_colour = "grey"
+        self.background_colour = "#082042"
+        self.button_colour = "#847355"
+        self.config(bg=self.background_colour, width=self.width, height=self.height)
+
         # the container is where we'll stack a bunch of frames
         # on top of each other, then the one we want visible
         # will be raised above the others
-        container = Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
+        self.container = Frame(self, width=self.width, height=self.height)
+
+        self.container.grid(row=0, column=0, sticky='news')
+        self.container.grid_rowconfigure(0, weight=1)
+        self.container.grid_columnconfigure(0, weight=1)
+        self.grid()
+        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (Barcode, Swipe, Update):
+        for F in (Test, Barcode, LaptopSerial, Update):
             page_name = F.__name__
-            frame = F(parent=container, controller=self)
+            frame = F(parent=self.container, controller=self, width=self.width, height=self.height)
             self.frames[page_name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
+            frame.grid(row=0, column=0, sticky="news")
+            frame.grid_columnconfigure(0, weight=1)
+            frame.grid_rowconfigure(0, weight=1)
 
         self.show_frame("Barcode")
-        self.current_frame = self.frames["Barcode"]
+
+    def geom_controller(self):
+        self.container.config(width=self.width, height=self.height)
+        self.after(5000, self.geom_controller)
 
     def show_frame(self, page):
         frame = self.frames[page]
@@ -153,33 +260,42 @@ class Gui(Tk):
         else:
             frame.key_press(event.keysym)
 
-    def swipe_submit(self, swipe):
-        response = self.ls.process_swipe(swipe)
+    def laptop_serial_submit(self, laptop_serial):
+        response = self.ls.search_device(laptop_serial)
         if response is None:
-            self.frames["Update"].display("Bad response from user detail request.", "red", self.standard_error_interval)
+            self.frames["Update"].display(f"{laptop_serial} Laptop barcode not Found", "red",
+                                          self.standard_error_interval)
             return
 
         try:
-            user_id = response["users"][0]["id"]
+            laptop_id = response["assets"][0]["id"]
         except (KeyError, IndexError) as _:
-            self.frames["Update"].display("Student Card is not found.\n\
-            No students with matching ID was found by the server\n\
-            Please see IT to update student information", "red", self.standard_error_interval)
+            self.frames["Update"].display(f"{laptop_serial} Laptop ID not found", "red", self.standard_error_interval)
+            return
+
+        response = self.ls.get_asset_details(laptop_id)
+        if response is None:
+            self.frames["Update"].display(f"{laptop_serial} Laptop details not Found", "red",
+                                          self.standard_error_interval)
+            return
+
+        try:
+            user_id = response["asset"]["user"]["id"]
+        except (KeyError, IndexError) as _:
+            self.frames["Update"].display(f"{laptop_serial} not assigned to user", "red", self.standard_error_interval)
             return
 
         if self.battery_pack:
-            response = self.ls.return_loan(user_id, self.battery_pack["id"])
-
+            response = self.ls.return_loan(str(user_id), str(self.battery_pack["id"]))
         else:
             self.frames["Update"].display("Forgot Asset ID please try again", "red", self.standard_error_interval)
             return
-
         if response is None:
             self.frames["Update"].display("""Loan was not created by server\n\
-            no update was made.""", "red", self.standard_error_interval)
+no update was made.""", "red", self.standard_error_interval)
             return
 
-        self.frames["Update"].display(f"Battery Pack {self.battery_pack['name']} is now loaned",
+        self.frames["Update"].display(f"{self.battery_pack['name']} is now loaned",
                                       "green", self.standard_error_interval)
 
     def barcode_submit(self, barcode, return_mode):
@@ -196,8 +312,8 @@ class Gui(Tk):
 
         # battery pack was not found
         except (KeyError, IndexError):
-            self.frames["Update"].display("""Battery Pack was not found by the server\n\
-            Please ensure scanned barcode matches digits on label""", "red", self.standard_error_interval)
+            self.frames["Update"].display(f"""{barcode} Not Found\n\
+Please ensure scanned barcode \nmatches digits on label""", "red", self.standard_error_interval)
             return
 
         # Check state of battery pack
@@ -209,8 +325,7 @@ class Gui(Tk):
 
         if device_state == "In Use":
             self.frames["Update"].display(f'Battery Pack {device["name"]} found.\n\
-            Attempting to return.',
-                                          "green", 5000)
+                Attempting to return.', "green", 5000)
             try:
                 loaned_asset_id = device["loan"]["id"]
                 loan_id = device["loan"]["loan"]["id"]
@@ -228,8 +343,8 @@ class Gui(Tk):
                 user_id = response["loaned_asset"]["received_by"]["id"]
             except KeyError:
                 self.frames["Update"].display("""User not found by the server\n\
-                Loan details were not returned by the server\n\
-                Please ensure scanned barcode matches digits on Label""", "red", self.standard_error_interval)
+Loan details were not returned by the server\n\
+Please ensure scanned barcode matches digits on Label""", "red", self.standard_error_interval)
                 return
             # update details
 
@@ -249,7 +364,7 @@ class Gui(Tk):
                                               "green", interval=1000)
             else:
                 self.frames["Update"].display(f"""Battery Pack {device["name"]} found.\nAttempting to Loan.""",
-                                              "green", interval=1000, frame="Swipe")
+                                              "green", interval=1000, frame="LaptopSerial")
 
         else:
             self.frames["Update"].display(f"""Battery Pack {device["name"]} does not have a recognised state""",

@@ -26,8 +26,11 @@ class LoanSystem:
         self.barcode = ""
         self.swipe = ""
 
-    # Defines the method to call the loan system process
     def run(self) -> None:
+        return
+
+    # Defines the method to call the loan system process
+    def process(self) -> None:
         while True:
             # Get Barcode
             self.get_barcode()
@@ -117,7 +120,7 @@ class LoanSystem:
             self.barcode = self.printer.get_input("Enter Barcode: ")
         JsonReader.update_asset_data(self.barcode)
 
-    def process_swipe(self, swipe) -> Union[dict, None]:
+    def process_swipe(self, swipe : str) -> Union[dict, None]:
         JsonReader.update_user_data(swipe)
 
         response = Talk.handle_response(
@@ -127,7 +130,23 @@ class LoanSystem:
 
         return response
 
-    def return_loan(self, user_id, asset_id) -> Union[dict, None]:
+    def search_device(self, serial : str) -> Union[dict, None]:
+        JsonReader.update_laptop_barcode(serial)
+        response = Talk.handle_response(
+            self.authenticator.talk("get_search",
+                                    "https://sacs.sdpondemand.manageengine.com/app/itdesk/api/v3/assets/",
+                                    JsonReader.get_json("laptopBarcode.json", "searchParam")))
+        return response
+
+    def get_asset_details(self, asset_id : str) -> Union[dict, None]:
+        response = Talk.handle_response(
+            self.authenticator.talk("get",
+                                    "https://sacs.sdpondemand.manageengine.com/app/itdesk/api/v3/assets/" +
+                                    str(asset_id)))
+
+        return response
+
+    def return_loan(self, user_id : str, asset_id : str) -> Union[dict, None]:
         JsonReader.update_loan_creation(HandleTime.get_today_timestamp(True),
                                         HandleTime.get_today_timestamp(False), user_id, asset_id)
 

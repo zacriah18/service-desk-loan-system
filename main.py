@@ -10,10 +10,13 @@
 # from typing import Union
 
 import Gui
-
+import LoanSystem
 
 # Main function
 def main():
+    ls = LoanSystem.LoanSystem()
+    ls.run()
+
     gui = Gui.Gui()
     gui.run()
 
