@@ -13,7 +13,6 @@ import JsonReader
 import HandleTime
 from typing import Union
 
-
 # Used class in loanSystem.__init__
 class Authenticator:
     def __init__(self, code: str = ""):
@@ -23,6 +22,8 @@ class Authenticator:
         self.auth_setup_filename = "firstContactAuthenticationParameters.json"
         self.auth_refresh_filename = "refreshAuthTokenParameters.json"
         self.auth_folder_name = "authentication"
+
+        self.session = requests.session()
 
         self.auth_credentials_file = lambda: JsonReader.get_json(self.auth_credentials_filename,
                                                                  self.auth_folder_name)
@@ -80,17 +81,21 @@ class Authenticator:
         if self.last_refresh - HandleTime.get_now_timestamp() > 3500:
             self.authenticate()
 
-        auth_header = self.auth_credentials_file()
+        self.session.headers = self.auth_credentials_file()
+        if param:
+            self.session.params = param
 
         actions = {
-            "get": lambda: requests.get(url, headers=auth_header),
-            "get_search": lambda: requests.get(url, param, headers=auth_header),
-            "post": lambda: requests.post(url, param, headers=auth_header),
-            "put": lambda: requests.put(url, param, headers=auth_header)
+            "get": lambda: self.session.get(url),
+            "get_search": lambda: self.session.get(url),
+            "post": lambda: self.session.post(url),
+            "put": lambda: self.session.put(url)
         }
+
         try:
             return actions[action]()
         except requests.exceptions.ConnectionError:
+            self.session = requests.session()
             return None
 
     def update_scope(self, url: str) -> None:
@@ -113,10 +118,9 @@ class Authenticator:
 
 # Used Function by loanSystem.trigger_return_battery_pack
 def handle_response(response: type(requests.models.Response)) -> Union[dict, None]:
-    print(response)
+    if response is None:
+        return response
     if response.status_code not in (200, 201):
-        print(response)
-        print(response.status_code)
         response_json = response.json()
         JsonReader.save_last_response(response_json)
         return None

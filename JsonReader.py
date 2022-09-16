@@ -10,6 +10,7 @@
 
 import json
 import os
+import HandleTime
 
 
 # Used Function in Talk.
@@ -38,6 +39,13 @@ def save_last_response(response: object) -> None:
     json_folder = "jsonData"
     response_folder = "connectionInfo"
     path = os.path.join(os.getcwd(), json_folder, response_folder, "lastResponse.json")
+
+    overwrite_json(path, response)
+
+def save_last_response(response: object) -> None:
+    json_folder = "jsonData"
+    response_folder = "logs"
+    path = os.path.join(os.getcwd(), json_folder, response_folder, f"Error at {HandleTime.get_now_timestamp()}.json")
 
     overwrite_json(path, response)
 
