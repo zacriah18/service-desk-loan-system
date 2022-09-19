@@ -16,7 +16,6 @@ import LoanSystem
 def main():
     ls = LoanSystem.LoanSystem()
     ls.run()
-
     gui = Gui.Gui()
     gui.run()
 

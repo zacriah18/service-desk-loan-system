@@ -42,7 +42,8 @@ def save_last_response(response: object) -> None:
 
     overwrite_json(path, response)
 
-def save_last_response(response: object) -> None:
+
+def save_log(response: object) -> None:
     json_folder = "jsonData"
     response_folder = "logs"
     path = os.path.join(os.getcwd(), json_folder, response_folder, f"Error at {HandleTime.get_now_timestamp()}.json")
@@ -251,16 +252,16 @@ def update_scope(*scopes) -> None:
     if not scopes:
         raise ValueError("Expected one input")
     scope_options = {
-                "requests": "SDPOnDemand.requests.ALL",
-                "problems": "SDPOnDemand.problems.ALL",
-                "changes": "SDPOnDemand.changes.ALL",
-                "projects": "SDPOnDemand.projects.ALL",
-                "assets": "SDPOnDemand.assets.ALL",
-                "cmdb": "SDPOnDemand.cmdb.ALL",
-                "setup": "SDPOnDemand.setup.ALL",
-                "general": "SDPOnDemand.general.ALL",
-                "users": "SDPOnDemand.users.All"
-            }
+        "requests": "SDPOnDemand.requests.ALL",
+        "problems": "SDPOnDemand.problems.ALL",
+        "changes": "SDPOnDemand.changes.ALL",
+        "projects": "SDPOnDemand.projects.ALL",
+        "assets": "SDPOnDemand.assets.ALL",
+        "cmdb": "SDPOnDemand.cmdb.ALL",
+        "setup": "SDPOnDemand.setup.ALL",
+        "general": "SDPOnDemand.general.ALL",
+        "users": "SDPOnDemand.users.All"
+    }
 
     request_scopes = scope_options[scopes[0]]
     scopes = scopes[1:]

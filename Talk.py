@@ -13,6 +13,7 @@ import JsonReader
 import HandleTime
 from typing import Union
 
+
 # Used class in loanSystem.__init__
 class Authenticator:
     def __init__(self, code: str = ""):
@@ -75,21 +76,20 @@ class Authenticator:
         return 0
 
     # Used Method
-    def talk(self, action: str, url: str, param: object = "") -> type(requests.models.Response):
-
+    def talk(self, action: str, url: str, param: object = "") -> Union[type(requests.models.Response), None]:
+        timeout = 3
         self.update_scope(url)
         if self.last_refresh - HandleTime.get_now_timestamp() > 3500:
             self.authenticate()
 
         self.session.headers = self.auth_credentials_file()
-        if param:
-            self.session.params = param
+        self.session.params = param
 
         actions = {
-            "get": lambda: self.session.get(url),
-            "get_search": lambda: self.session.get(url),
-            "post": lambda: self.session.post(url),
-            "put": lambda: self.session.put(url)
+            "get": lambda: self.session.get(url, timeout=timeout),
+            "get_search": lambda: self.session.get(url, timeout=timeout),
+            "post": lambda: self.session.post(url, timeout=timeout),
+            "put": lambda: self.session.put(url, timeout=timeout)
         }
 
         try:
@@ -118,11 +118,10 @@ class Authenticator:
 
 # Used Function by loanSystem.trigger_return_battery_pack
 def handle_response(response: type(requests.models.Response)) -> Union[dict, None]:
-    if response is None:
-        return response
-    if response.status_code not in (200, 201):
+    print(response.status_code)
+    if response.status_code not in (200, 201, 2000):
         response_json = response.json()
-        JsonReader.save_last_response(response_json)
+        JsonReader.save_log(response_json)
         return None
     response_json = response.json()
     JsonReader.save_last_response(response_json)
