@@ -11,6 +11,7 @@
 import requests
 import JsonReader
 import HandleTime
+import os
 from typing import Union
 
 
@@ -80,7 +81,7 @@ class Authenticator:
 
     # Used Method
     def talk(self, action: str, url: str, param: object = "") -> Union[type(requests.models.Response), None]:
-        timeout = 3
+        timeout = 5
         self.update_scope(url)
         if self.last_refresh - HandleTime.get_now_timestamp() > 3500:
             self.authenticate()
@@ -100,6 +101,8 @@ class Authenticator:
         except requests.exceptions.ConnectionError:
             self.session = requests.session()
             return None
+        except requests.exceptions.Timeout:
+            os.system('sudo reboot')
 
     def update_scope(self, url: str) -> None:
         # possible scopes = ["requests", "problems", "changes", "projects", "assets", "cmdb", "setup", "general"]
