@@ -12,6 +12,7 @@
 import Gui
 import LoanSystem
 
+
 # Main function
 def main():
     ls = LoanSystem.LoanSystem()

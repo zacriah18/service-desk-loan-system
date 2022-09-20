@@ -28,7 +28,7 @@ class LoanSystem:
         self.swipe = ""
 
     def run(self) -> None:
-        self.search_device("003819714453")
+        pass
 
     def search_device(self, serial: str) -> Union[dict, None]:
         JsonReader.update_laptop_barcode(serial)

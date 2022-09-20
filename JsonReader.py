@@ -43,10 +43,11 @@ def save_last_response(response: object) -> None:
     overwrite_json(path, response)
 
 
-def save_log(response: object) -> None:
+def save_log(response: object, log_type: str) -> None:
     json_folder = "jsonData"
     response_folder = "logs"
-    path = os.path.join(os.getcwd(), json_folder, response_folder, f"Error at {HandleTime.get_now_timestamp()}.json")
+    # ["Error", "Auth", "First_Auth"]
+    path = os.path.join(os.getcwd(), json_folder, response_folder, f"{log_type} at {HandleTime.get_now_timestamp()}.json")
 
     overwrite_json(path, response)
 

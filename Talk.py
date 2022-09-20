@@ -42,8 +42,11 @@ class Authenticator:
                                    str(code)
                                    )
             response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_setup_file())
+            while response is None:
+                response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_setup_file())
+
             response_json = response.json()
-            JsonReader.save_last_refresh(response_json)
+            JsonReader.save_log(response_json, "first_auth")
             try:
                 JsonReader.update_json(self.auth_refresh_filename,
                                        self.auth_folder_name,
@@ -59,7 +62,7 @@ class Authenticator:
         # code is used to set up first time authentication from
         response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_refresh_file())
         response_json = response.json()
-        JsonReader.save_last_refresh(response_json)
+        JsonReader.save_log(response_json, "auth")
 
         try:
             JsonReader.update_json(self.auth_credentials_filename,
@@ -118,11 +121,12 @@ class Authenticator:
 
 # Used Function by loanSystem.trigger_return_battery_pack
 def handle_response(response: type(requests.models.Response)) -> Union[dict, None]:
-    print(response.status_code)
-    if response.status_code not in (200, 201, 2000):
+    try:
         response_json = response.json()
-        JsonReader.save_log(response_json)
+    except TypeError:
         return None
-    response_json = response.json()
+    if not response.ok():
+        JsonReader.save_log(response_json, "Bad response")
+        return None
     JsonReader.save_last_response(response_json)
     return response_json
