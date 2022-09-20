@@ -125,7 +125,7 @@ def handle_response(response: type(requests.models.Response)) -> Union[dict, Non
         response_json = response.json()
     except TypeError:
         return None
-    if not response.ok():
+    if not response.ok:
         JsonReader.save_log(response_json, "Bad response")
         return None
     JsonReader.save_last_response(response_json)
