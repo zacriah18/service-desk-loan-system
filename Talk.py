@@ -61,7 +61,11 @@ class Authenticator:
 
     def authenticate(self):
         # code is used to set up first time authentication from
+
         response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_refresh_file())
+        while response is None:
+            response = self.talk("post", "https://accounts.zoho.com/oauth/v2/token", self.auth_refresh_file())
+
         response_json = response.json()
         JsonReader.save_log(response_json, "auth")
 

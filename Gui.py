@@ -44,7 +44,7 @@ class Barcode(ServiceDeskFrame):
         self.grid_columnconfigure(1, weight=2)
         self.grid_rowconfigure(1, weight=2)
         self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(2, weight=0)
+        self.grid_rowconfigure(2, weight=1)
 
         #  Import Image | separate image import for better config
         image_height = 128
@@ -57,12 +57,12 @@ class Barcode(ServiceDeskFrame):
         self.logo_label = Label(self, image=logo_image_tk)
         self.logo_label.image = logo_image_tk
         self.logo_label.config(borderwidth=0, highlightthickness=0)
-        self.logo_label.grid(row=0, column=0, rowspan=2, sticky='w')
+        self.logo_label.grid(row=0, column=0, sticky='nw')
 
         # Label
         self.label = Label(self, text=f"Barcode: {self.input}")
         self.label.config(font=controller.title_font, fg=controller.font_colour, bg=controller.background_colour)
-        self.label.grid(row=0, column=1, rowspan=2, columnspan=2, sticky='w')
+        self.label.grid(row=1, column=0, rowspan=2, columnspan=2, sticky='n')
 
         # Button
         self.button = Button(self, text=f"Toggle Return Mode: {self.return_mode}",
@@ -106,13 +106,17 @@ class LaptopSerial(ServiceDeskFrame):
         self.input = ""
         self.config(bg=controller.background_colour)
 
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_rowconfigure(0, weight=2)
+        self.grid_rowconfigure(1, weight=0)
+
         self.label = Label(self, text=f"Laptop Serial: {self.input}", font=controller.title_font, fg=controller.font_colour,
                            bg=controller.background_colour)
-        self.label.grid(row=1, column=1)
+        self.label.grid(row=0, column=0)
 
         button = Button(self, text="Cancel", command=self.cancel, font=controller.button_font)
         button.config(height=5, width=30, fg=controller.font_colour, bg=controller.button_colour)
-        button.grid(row=2, column=1)
+        button.grid(row=1, column=0, sticky='news')
 
     def cancel(self):
         self.input = ""
@@ -163,8 +167,8 @@ class Gui(Tk):
 
         self.current_frame = None
 
-        self.width = 320
-        self.height = 240
+        self.width = 800
+        self.height = 480
         self.geom = str(self.width) + "x" + str(self.height)
 
         self.bind("<Key>", self.key_pressed)
