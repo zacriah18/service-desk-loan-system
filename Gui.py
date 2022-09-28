@@ -209,6 +209,7 @@ class Gui(Tk):
         frame = self.frames[page]
         frame.tkraise()
         self.current_frame = frame
+        self.update()
 
     def run(self):
         self.mainloop()
@@ -222,7 +223,8 @@ class Gui(Tk):
 
         elif event.keysym == "BackSpace":
             self.current_frame.back()
-
+        elif event.keysym in ("Shift_L", "Shift_R", "Control_L", "Control_R", "Alt_L", "Alt_R", "Win_L","Tab"):
+            pass
         else:
             self.current_frame.key_press(event.keysym)
 
@@ -265,6 +267,10 @@ no update was made.""", "red", self.standard_error_interval)
                                       "green", self.standard_error_interval)
 
     def battery_serial_submit(self, barcode, return_mode):
+        if len(barcode) == 20 and barcode[:12] == "1s20Y0S1AR00":
+            barcode = barcode[12:]
+            self.frames["Update"].display('Detected casual laptop barcode', "green", 3000)
+
         response = self.ls.process_barcode(barcode)
 
         # Check battery pack was found
